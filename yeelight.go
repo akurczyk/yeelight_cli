@@ -1,0 +1,199 @@
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"net"
+	"os"
+	"strconv"
+	"strings"
+)
+
+const SetTemperatureCmd = "{\"id\": 1, \"method\": \"set_ct_abx\", \"params\":[%d, \"smooth\", 500]}\r\n"
+const SetRGBCmd = "{\"id\": 1, \"method\": \"set_rgb\", \"params\":[%d, \"smooth\", 500]}\r\n"
+const SetHSVCmd = "{\"id\": 1, \"method\": \"set_hsv\", \"params\":[%d, %d, \"smooth\", 500]}\r\n"
+const SetBrightnessCmd = "{\"id\": 1, \"method\": \"set_bright\", \"params\":[%d, \"smooth\", 500]}\r\n"
+const SetPowerCmd = "{\"id\": 1, \"method\": \"set_power\", \"params\":[\"on\", \"smooth\", 500]}\r\n"
+
+func main() {
+	switch command := os.Args[1]; command {
+	case "temperature":
+		temperature()
+	case "rgb":
+		rgb()
+	case "hsv":
+		hsv()
+	case "off":
+		off()
+	case "help":
+		displayHelp("")
+	default:
+		displayHelp("You need to choice some action.")
+	}
+}
+
+func temperature() {
+	var host string
+	var value int
+	var brightness int
+	var err error
+
+	if len(os.Args) != 5 {
+		displayHelp("Wrong number of parameters.")
+	}
+
+	if host = net.ParseIP(os.Args[2]).String(); host == "" {
+		displayHelp("Wrong IP address format.")
+	}
+
+	if value, err = strconv.Atoi(os.Args[3]); err != nil || value < 1700 || value > 6500 {
+		displayHelp("Wrong temperature value. It has to be between 1700 and 6500 Kelvins.")
+	}
+
+	if brightness, err = strconv.Atoi(os.Args[4]); err != nil || brightness < 0 || brightness > 100 {
+		displayHelp("Wrong brightness value. It has to be between 0 and 100 percent.")
+	}
+
+	sendCommand(host, fmt.Sprintf(SetTemperatureCmd, value))
+	sendCommand(host, fmt.Sprintf(SetBrightnessCmd, brightness))
+	sendCommand(host, fmt.Sprintf(SetPowerCmd, "on"))
+}
+
+func rgb() {
+	var host string
+	var red int
+	var green int
+	var blue int
+	var brightness int
+	var err error
+
+	if len(os.Args) != 7 {
+		displayHelp("Wrong number of parameters.")
+	}
+
+	if host = net.ParseIP(os.Args[2]).String(); host == "" {
+		displayHelp("Wrong IP address format.")
+	}
+
+	if red, err = strconv.Atoi(os.Args[3]); err != nil || red < 0 || red > 255 {
+		displayHelp("Wrong red value. It has to be between 0 and 255.")
+	}
+
+	if green, err = strconv.Atoi(os.Args[4]); err != nil || green < 0 || green > 255 {
+		displayHelp("Wrong green value. It has to be between 0 and 255.")
+	}
+
+	if blue, err = strconv.Atoi(os.Args[5]); err != nil || blue < 0 || blue > 255 {
+		displayHelp("Wrong blue value. It has to be between 0 and 255.")
+	}
+
+	if brightness, err = strconv.Atoi(os.Args[6]); err != nil || brightness < 0 || brightness > 100 {
+		displayHelp("Wrong brightness value. It has to be between 0 and 100 percent.")
+	}
+
+	sendCommand(host, fmt.Sprintf(SetRGBCmd, red<<16 + green<<8 + blue))
+	sendCommand(host, fmt.Sprintf(SetBrightnessCmd, brightness))
+	sendCommand(host, fmt.Sprintf(SetPowerCmd, "on"))
+}
+
+func hsv() {
+	var host string
+	var hue int
+	var saturation int
+	var brightness int
+	var err error
+
+	if len(os.Args) != 6 {
+		displayHelp("Wrong number of parameters.")
+	}
+
+	if host = net.ParseIP(os.Args[2]).String(); host == "" {
+		displayHelp("Wrong IP address format.")
+	}
+
+	if hue, err = strconv.Atoi(os.Args[3]); err != nil || hue < 0 || hue > 359 {
+		displayHelp("Wrong hue value. It has to be between 0 and 359.")
+	}
+
+	if saturation, err = strconv.Atoi(os.Args[4]); err != nil || saturation < 0 || saturation > 255 {
+		displayHelp("Wrong saturation value. It has to be between 0 and 255.")
+	}
+
+	if brightness, err = strconv.Atoi(os.Args[5]); err != nil || brightness < 0 || brightness > 100 {
+		displayHelp("Wrong brightness value. It has to be between 0 and 100 percent.")
+	}
+
+	sendCommand(host, fmt.Sprintf(SetHSVCmd, hue, saturation))
+	sendCommand(host, fmt.Sprintf(SetBrightnessCmd, brightness))
+	sendCommand(host, fmt.Sprintf(SetPowerCmd, "on"))
+}
+
+func off() {
+	var host string
+
+	if len(os.Args) != 3 {
+		displayHelp("Wrong number of parameters.")
+	}
+
+	if host = net.ParseIP(os.Args[2]).String(); host == "" {
+		displayHelp("Wrong IP address format.")
+	}
+
+	sendCommand(host, fmt.Sprintf(SetPowerCmd, "off"))
+}
+
+func sendCommand(host string, command string) {
+	var conn net.Conn
+	var status string
+	var err error
+
+	conn, err = net.Dial("tcp", host+":55443")
+	if err != nil {
+		fmt.Println("Error: Could not connect with the light bulb. Check IP address and make sure that local connections are enabled in Yeelight settings.")
+		os.Exit(1)
+	}
+
+	_, err = fmt.Fprintf(conn, command)
+	if err != nil {
+		fmt.Println("Error: Connection problem.")
+		os.Exit(1)
+	}
+
+	status, err = bufio.NewReader(conn).ReadString('\n')
+	if err != nil {
+		fmt.Println("Error: Connection problem.")
+		os.Exit(1)
+	}
+
+	if !strings.Contains(status, "{\"id\":1,\"result\":[\"ok\"]}") {
+		fmt.Println("Error: Received bad status code.\r\n" + status)
+		os.Exit(1)
+	}
+}
+
+func displayHelp(error string) {
+
+	fmt.Println("Xiaomi Yeelight WiFi light bulb CLI control tool written in Go")
+	fmt.Println("==============================================================")
+	fmt.Println()
+
+	if error != "" {
+		fmt.Println("Error:\r\n\t" + error)
+		fmt.Println()
+	}
+
+	fmt.Println("Usage:")
+	fmt.Println("\tyeelight temperature <Light bulb IP address> <Light temperature in Kelvins 1700-6500> <Brightness 0-100>")
+	fmt.Println("\tyeelight rgb <Light bulb IP address> <Red value 0-255> <Green value 0-255> <Blue value 0-255> <Brightness 0-100>")
+	fmt.Println("\tyeelight hsv <Light bulb IP address> <Hue 0-359> <Saturation 0-100> <Brightness/Value 0-100>")
+	fmt.Println("\tyeelight off <Light bulb IP address>")
+	fmt.Println("\tyeelight help")
+	fmt.Println()
+	fmt.Println("Author: Aleksander Kurczyk")
+	fmt.Println("Sources: https://github.com/akurczyk/yeelight_cli")
+	fmt.Println("License: Creative Commons")
+
+	if error != "" {
+		os.Exit(1)
+	}
+}
