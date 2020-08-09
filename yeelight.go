@@ -172,7 +172,6 @@ func sendCommand(host string, command string) {
 }
 
 func displayHelp(error string) {
-
 	fmt.Println("Xiaomi Yeelight WiFi light bulb CLI control tool written in Go")
 	fmt.Println("==============================================================")
 	fmt.Println()
