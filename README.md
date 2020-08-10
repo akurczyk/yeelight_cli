@@ -5,8 +5,6 @@ This is a simple tool which allow you to set colors on your Xiaomi Yeelight ligh
 To enable Lan Control:
 ----------------------
 
-A | B
-- | - 
 ![LAN Control](img1.jpg) | ![IP address](img2.jpg)
 
 To run it:
