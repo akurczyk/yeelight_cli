@@ -1,6 +1,13 @@
 # 💡 🌈 Xiaomi Yeelight control tool written in Go
 
-This is a simple tool which allow you to set colors on your Xiaomi Yeelight light bulbs in LAN network. **It requires you to enable LAN management in Yeelight settings.**
+This is a simple tool which allow you to set colors on your Xiaomi Yeelight light bulbs in LAN network. **It requires you to enable LAN Control in Yeelight settings.**
+
+To enable Lan Control:
+----------------------
+
+A | B
+- | - 
+![LAN Control](img1.jpg) | ![IP address](img2.jpg)
 
 To run it:
 ----------
