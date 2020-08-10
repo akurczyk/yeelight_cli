@@ -1,4 +1,4 @@
-# 💡 🌈 Xiaomi Yeelight WiFi light bulb CLI control tool written in Go
+# 💡 🌈 Xiaomi Yeelight control tool written in Go
 
 This is a simple tool which allow you to set colors on your Xiaomi Yeelight light bulbs in LAN network. **It requires you to enable LAN management in Yeelight settings.**
 
