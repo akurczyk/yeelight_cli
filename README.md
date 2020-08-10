@@ -2,7 +2,7 @@
 
 This is a simple tool which allow you to set colors on your Xiaomi Yeelight light bulbs in LAN network. **It requires you to enable LAN Control in Yeelight settings.**
 
-To enable Lan Control and get the IP address:
+To enable LAN Control and get the IP address:
 ---------------------------------------------
 
   LAN Control               |  IP address
@@ -19,7 +19,7 @@ To run it:
 ----------
 1. Install Golang - this depends on your operating system.
 2. Execute `go build yeelight.go` to compile the source code. The result will be a binary file with the name `yeelight`.
-3. Copy the executable to `/usr/local/bin` (on Unix systems) in order to be able to execute it from any location by running `sudo cp yeelight /usr/local/bin`.
+3. Copy the executable to `/usr/local/bin` (on Unix systems) by running `sudo cp yeelight /usr/local/bin` in order to be able to execute it from any location.
 4. Execute it with `yeelight <arguments here>`
 
 Usage:
