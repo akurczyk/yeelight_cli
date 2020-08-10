@@ -9,9 +9,9 @@ To enable Lan Control and get the IP address:
 2. Choice you light bulb.
 3. Open more settings using the rightmost button on the bottom bar.
 4. Click on the *LAN Control* button.
-   ![LAN Control](img1.jpg)
-5. Open settings (rightmost button on the top bar) -> Device Info and read the IP address.
-   ![IP address](img2.jpg)
+   ![LAN Control](img1.jpg){width=50%}
+5. Open settings (rightmost button on the top bar) -> *Device Info* and read the IP address.
+   ![IP address](img2.jpg){width=50%}
 
 To run it:
 ----------
