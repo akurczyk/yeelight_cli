@@ -16,6 +16,10 @@ const SetBrightnessCmd = "{\"id\": 1, \"method\": \"set_bright\", \"params\":[%d
 const SetPowerCmd = "{\"id\": 1, \"method\": \"set_power\", \"params\":[\"on\", \"smooth\", 500]}\r\n"
 
 func main() {
+	if len(os.Args) < 2 {
+		displayHelp("You need to choice some action.")
+	}
+
 	switch command := os.Args[1]; command {
 	case "temperature":
 		temperature()
@@ -152,6 +156,7 @@ func sendCommand(host string, command string) {
 		fmt.Println("Error: Could not connect with the light bulb. Check IP address and make sure that local connections are enabled in Yeelight settings.")
 		os.Exit(1)
 	}
+	defer conn.Close()
 
 	_, err = fmt.Fprintf(conn, command)
 	if err != nil {
