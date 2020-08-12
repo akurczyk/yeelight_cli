@@ -155,10 +155,17 @@ func sendCommand(host string, command string) {
 
 	conn, err = net.Dial("tcp", host+":55443")
 	if err != nil {
-		fmt.Println("Error: Could not connect with the light bulb. Check IP address and make sure that local connections are enabled in Yeelight settings.")
+		fmt.Println("Error: Could not connect with the light bulb. Check IP address and make sure that local " +
+			"connections are enabled in Yeelight settings.")
 		os.Exit(1)
 	}
-	defer conn.Close()
+
+	defer func() {
+		err = conn.Close()
+		if err != nil {
+			fmt.Println("Error: Can not close the connection with the light bulb.")
+		}
+	}()
 
 	_, err = fmt.Fprintf(conn, command)
 	if err != nil {
@@ -189,15 +196,16 @@ func displayHelp(error string) {
 	}
 
 	fmt.Println("Usage:")
-	fmt.Println("\tyeelight temperature <Light bulb IP address> <Light temperature in Kelvins 1700-6500> <Brightness 0-100>")
-	fmt.Println("\tyeelight rgb <Light bulb IP address> <Red value 0-255> <Green value 0-255> <Blue value 0-255> <Brightness 0-100>")
+	fmt.Println("\tyeelight temperature <Light bulb IP address> <Light temperature in Kelvins 1700-6500> " +
+		"<Brightness 0-100>")
+	fmt.Println("\tyeelight rgb <Light bulb IP address> <Red value 0-255> <Green value 0-255> <Blue value 0-255> " +
+		"<Brightness 0-100>")
 	fmt.Println("\tyeelight hsv <Light bulb IP address> <Hue 0-359> <Saturation 0-100> <Brightness/Value 0-100>")
 	fmt.Println("\tyeelight off <Light bulb IP address>")
 	fmt.Println("\tyeelight help")
 	fmt.Println()
 	fmt.Println("Author: Aleksander Kurczyk")
 	fmt.Println("Sources: https://github.com/akurczyk/yeelight_cli")
-	fmt.Println("License: Creative Commons")
 
 	if error != "" {
 		os.Exit(1)
