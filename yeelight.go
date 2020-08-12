@@ -9,11 +9,11 @@ import (
 	"strings"
 )
 
+const SetPowerCmd = "{\"id\": 1, \"method\": \"set_power\", \"params\":[\"%s\", \"smooth\", 500]}\r\n"
 const SetTemperatureCmd = "{\"id\": 1, \"method\": \"set_ct_abx\", \"params\":[%d, \"smooth\", 500]}\r\n"
 const SetRGBCmd = "{\"id\": 1, \"method\": \"set_rgb\", \"params\":[%d, \"smooth\", 500]}\r\n"
 const SetHSVCmd = "{\"id\": 1, \"method\": \"set_hsv\", \"params\":[%d, %d, \"smooth\", 500]}\r\n"
 const SetBrightnessCmd = "{\"id\": 1, \"method\": \"set_bright\", \"params\":[%d, \"smooth\", 500]}\r\n"
-const SetPowerCmd = "{\"id\": 1, \"method\": \"set_power\", \"params\":[\"on\", \"smooth\", 500]}\r\n"
 
 func main() {
 	if len(os.Args) < 2 {
@@ -58,9 +58,9 @@ func temperature() {
 		displayHelp("Wrong brightness value. It has to be between 0 and 100 percent.")
 	}
 
+	sendCommand(host, fmt.Sprintf(SetPowerCmd, "on"))
 	sendCommand(host, fmt.Sprintf(SetTemperatureCmd, value))
 	sendCommand(host, fmt.Sprintf(SetBrightnessCmd, brightness))
-	sendCommand(host, fmt.Sprintf(SetPowerCmd, "on"))
 }
 
 func rgb() {
@@ -95,9 +95,9 @@ func rgb() {
 		displayHelp("Wrong brightness value. It has to be between 0 and 100 percent.")
 	}
 
+	sendCommand(host, fmt.Sprintf(SetPowerCmd, "on"))
 	sendCommand(host, fmt.Sprintf(SetRGBCmd, red<<16 + green<<8 + blue))
 	sendCommand(host, fmt.Sprintf(SetBrightnessCmd, brightness))
-	sendCommand(host, fmt.Sprintf(SetPowerCmd, "on"))
 }
 
 func hsv() {
@@ -127,9 +127,9 @@ func hsv() {
 		displayHelp("Wrong brightness value. It has to be between 0 and 100 percent.")
 	}
 
+	sendCommand(host, fmt.Sprintf(SetPowerCmd, "on"))
 	sendCommand(host, fmt.Sprintf(SetHSVCmd, hue, saturation))
 	sendCommand(host, fmt.Sprintf(SetBrightnessCmd, brightness))
-	sendCommand(host, fmt.Sprintf(SetPowerCmd, "on"))
 }
 
 func off() {
