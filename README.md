@@ -28,8 +28,8 @@ Usage:
 * `yeelight rgb <Light bulb IP address> <Red value 0-255> <Green value 0-255> <Blue value 0-255> <Brightness 0-100>` - this command turns on the light bulb, switches it to RGB/HSV color mode and sets the desired color and brightnes,
 * `yeelight hsv <Light bulb IP address> <Hue 0-359> <Saturation 0-100> <Brightness/Value 0-100>` - this command turns on the light bulb, switches it to RGB/HSV color mode and sets the desired color and brightnes,
 * `yeelight off <Light bulb IP address>` - this command turns off the light bulb,
-* `yeelight active_discovery` - this command sends multicast UDP/SSDP discovery message and collect responses displaying light bulbs IP addresses,
-* `yeelight passive_discovery` - similar to previous command, this command binds to SSDP multicast group, and without sending discovery packet, collects the periodic advertisements, displaying light bulbs IP addresses,
+* **`yeelight active_discovery` - this command sends multicast UDP/SSDP discovery message and collect responses displaying light bulbs IP addresses,**
+* **`yeelight passive_discovery` - similar to previous command, this command binds to SSDP multicast group, and without sending discovery packet, collects the periodic advertisements, displaying light bulbs IP addresses,**
 * `yeelight help` - this command just displays help and exits.
 
 Protocol details can be found here: https://www.yeelight.com/download/Yeelight_Inter-Operation_Spec.pdf
